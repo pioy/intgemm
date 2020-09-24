@@ -16,6 +16,14 @@ else()
   add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-unknown-pragmas)
 endif()
 
+if(USE_ASAN)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
+  set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address")
+  set(GTEST_LIBRARIES "${GTEST_LIBRARIES} -fsanitize=address")
+  list(APPEND mxnet_LINKER_LIBS asan)
+endif()
+
 # Check if compiler supports AVX512BW
 try_compile(INTGEMM_COMPILER_SUPPORTS_AVX512BW
   ${CMAKE_CURRENT_BINARY_DIR}/compile_tests
